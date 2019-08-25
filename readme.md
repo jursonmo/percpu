@@ -22,8 +22,8 @@
 这里可以注意到,有用到顺序计数功能。为了保证读写一致性。
 
 4. 我想实现一个golang 版本的per_cpu 就可以利用上面的知识了：
- a. 优先要能获取到procces_id，这时关键，runtime 里的procPin()方法可以获取到pid,但是它是非导出方法
- b. //go:linkname 可以间接使用runtime 里的procPin()方法
+ * 优先要能获取到procces_id，这时关键，runtime 里的procPin()方法可以获取到pid,但是它是非导出方法
+ * //go:linkname 可以间接使用runtime 里的procPin()方法
 
  5. 统计信息一般用atomic来做，可以对比下per_cpu 性能
  ```
