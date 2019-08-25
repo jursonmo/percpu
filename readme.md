@@ -63,7 +63,9 @@ ok      percpu  41.514s
 当cpu可以看到atomic 性能随着cpu核数的递增而下降, 但是Percpu 方式几乎没有变化
 
 参数说明:
+```
 -cpu 1,2,4
     Specify a list of GOMAXPROCS values for which the tests or
-    benchmarks should be executed. The default is the current value
-    of GOMAXPROCS.
+    benchmarks should be executed. The default is the current value of GOMAXPROCS.
+    ```
+   
