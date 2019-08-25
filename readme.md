@@ -60,7 +60,9 @@ PASS
 ok      percpu  41.514s
 
 ```
-当cpu可以看到atomic 性能随着cpu核数的递增而下降, 但是Percpu 方式几乎没有变化
+可以看到atomic 性能随着cpu核数的递增而下降, 但是Percpu 方式几乎没有变化
+
+单cpu情况下, atomic 性能比Percpu 高,但这个没有意义,  单cpu情况下, 根本不需要 atomic 和 Percpu 
 
 参数说明:
 ```
