@@ -27,42 +27,46 @@
 
  5. 统计信息一般用atomic来做，可以对比下per_cpu 性能
  ```
- $ go test -bench .
+$ go test -bench .
 goos: windows
 goarch: amd64
 pkg: percpu
-BenchmarkAtomic-4               300000000                5.48 ns/op
-BenchmarkPercpu-4               200000000                6.03 ns/op
-BenchmarkAtomicParallel-4       100000000               17.1 ns/op
-BenchmarkPercpuParallel-4       200000000                9.28 ns/op
-BenchmarkPercpuSeqParallel-4    200000000                9.72 ns/op
+BenchmarkAtomic-4               300000000                5.38 ns/op
+BenchmarkPercpu-4               200000000                5.87 ns/op
+BenchmarkAtomicParallel-4       100000000               17.4 ns/op
+BenchmarkPercpuParallel-4       200000000               11.9 ns/op
+BenchmarkPercpuSeqParallel-4    200000000                8.47 ns/op
+PASS
+ok      percpu  15.440s
+
 
 $ go test -bench . -cpu=1,2,4
 goos: windows
 goarch: amd64
 pkg: percpu
-BenchmarkAtomic                 300000000                5.54 ns/op
-BenchmarkAtomic-2               300000000                5.56 ns/op
-BenchmarkAtomic-4               300000000                5.51 ns/op
-BenchmarkPercpu                 200000000                5.98 ns/op
-BenchmarkPercpu-2               200000000                6.02 ns/op
-BenchmarkPercpu-4               200000000                6.15 ns/op
-BenchmarkAtomicParallel         200000000                8.12 ns/op
-BenchmarkAtomicParallel-2       100000000               11.0 ns/op
-BenchmarkAtomicParallel-4       100000000               15.7 ns/op
-BenchmarkPercpuParallel         200000000                6.87 ns/op
-BenchmarkPercpuParallel-2       200000000                8.56 ns/op
-BenchmarkPercpuParallel-4       200000000                9.29 ns/op
-BenchmarkPercpuSeqParallel      200000000                8.40 ns/op
-BenchmarkPercpuSeqParallel-2    200000000                9.61 ns/op
-BenchmarkPercpuSeqParallel-4    100000000               10.7 ns/op
+BenchmarkAtomic                 300000000                5.41 ns/op
+BenchmarkAtomic-2               300000000                5.41 ns/op
+BenchmarkAtomic-4               300000000                5.45 ns/op
+BenchmarkPercpu                 300000000                6.66 ns/op
+BenchmarkPercpu-2               200000000                6.03 ns/op
+BenchmarkPercpu-4               300000000                6.77 ns/op
+BenchmarkAtomicParallel         200000000                7.47 ns/op
+BenchmarkAtomicParallel-2       200000000               10.4 ns/op
+BenchmarkAtomicParallel-4       100000000               17.6 ns/op
+BenchmarkPercpuParallel         200000000                6.33 ns/op
+BenchmarkPercpuParallel-2       100000000               12.6 ns/op
+BenchmarkPercpuParallel-4       100000000               11.9 ns/op
+BenchmarkPercpuSeqParallel      200000000                8.06 ns/op
+BenchmarkPercpuSeqParallel-2    100000000               10.0 ns/op
+BenchmarkPercpuSeqParallel-4    200000000                8.73 ns/op
 PASS
-ok      percpu  41.514s
+ok      percpu  40.046s
+
 
 ```
-可以看到atomic 性能随着cpu核数的递增而下降, 但是Percpu 方式几乎没有变化
-
-单cpu情况下, atomic 性能比Percpu 高,但这个没有意义,  单cpu情况下, 根本不需要 atomic 和 Percpu 
+1. 可以看到atomic 性能随着cpu核数的递增而下降, 但是Percpu 方式几乎没有变化;  
+2. 带有pad 的percpu比没有pad 的percpu变量性能要高
+3. 单cpu情况下, atomic 性能比Percpu 高,但这个没有意义,  单cpu情况下, 根本不需要 atomic 和 Percpu 
 
 参数说明:
 ```

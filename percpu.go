@@ -3,7 +3,7 @@ package percpu
 import (
 	"runtime"
 	"sync/atomic"
-	_ "unsafe"
+	"unsafe"
 )
 
 //go:linkname procPin runtime.procPin
@@ -57,11 +57,17 @@ func NewUintVar() *perCpuUint {
 }
 */
 
-//with seq, make sum()
+//with seq and pad, make sum()
 type intSeq struct {
+	intSeqInternal
+	pad [128 - unsafe.Sizeof(intSeqInternal{})%128]byte
+}
+
+type intSeqInternal struct {
 	v   int
 	seq int32
 }
+
 type perCpuIntSeq struct {
 	vs []intSeq
 }
