@@ -1,22 +1,54 @@
 package percpu
 
 import (
+	"runtime"
+	"sync"
 	"sync/atomic"
 	"testing"
-	"time"
 )
 
 func TestPercpu(t *testing.T) {
+	var wg sync.WaitGroup
 	p := NewIntVar()
+	ng := 1000
 
-	for i := 0; i < 1000; i++ {
+	wg.Add(ng)
+	for i := 0; i < ng; i++ {
 		go func() {
 			p.Add(1)
+			wg.Done()
 		}()
 	}
 
-	time.Sleep(time.Second * 3)
+	wg.Wait()
 	t.Log(p.Value())
+	if ng != p.Value() {
+		t.Fatalf("total should be:%d, but actually is %d\n", ng, p.Value())
+	}
+}
+
+func TestPercpuParallel(t *testing.T) {
+	var wg sync.WaitGroup
+	p := NewIntVar()
+	np := runtime.GOMAXPROCS(0)
+	loop := int(100000000)
+
+	wg.Add(np)
+	for i := 0; i < np; i++ {
+		go func(index int) {
+			t.Logf("go index:%d, pid:%d\n", index, GetPid())
+			for j := 0; j < loop; j++ {
+				p.Add(1)
+			}
+			wg.Done()
+		}(i)
+	}
+
+	wg.Wait()
+	t.Log(p.Value())
+	if np*loop != p.Value() {
+		t.Fatalf("total should be:%d, but actually is %d\n", np*loop, p.Value())
+	}
 }
 
 func BenchmarkAtomic(b *testing.B) {
