@@ -79,13 +79,13 @@ func NewIntSeqVar() *perCpuIntSeq {
 
 func (p *perCpuIntSeq) Add(v int) {
 	pid := GetPid()
-	p.vs[pid].v += v
+	p.vs[pid].v += v //should violatile:  use atomic, P's id does't mean run on the same cpu
 	p.vs[pid].seq++
 }
 
 func (p *perCpuIntSeq) Dec(v int) {
 	pid := GetPid()
-	p.vs[pid].v -= v
+	p.vs[pid].v -= v //should violatile:  use atomic, P's id  does't mean run on the same cpu
 	p.vs[pid].seq++
 }
 
