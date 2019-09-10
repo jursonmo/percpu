@@ -77,6 +77,23 @@ func NewIntSeqVar() *perCpuIntSeq {
 	return &perCpuIntSeq{make([]intSeq, n)}
 }
 
+/*
+// save mode: procPin()-->m.locks++, means  g don't schedule
+func (p *perCpuIntSeq) Add(v int) {
+	pid := procPin()
+	p.vs[pid].v += v //should violatile:  use atomic, P's id does't mean run on the same cpu
+	p.vs[pid].seq++
+	procUnpin()
+}
+
+func (p *perCpuIntSeq) Dec(v int) {
+	pid := procPin()
+	p.vs[pid].v -= v //should violatile:  use atomic, P's id  does't mean run on the same cpu
+	p.vs[pid].seq++
+	procUnpin()
+}
+*/
+//i think that g never be scheduled between "p.vs[pid].v += v" and "p.vs[pid].seq++"
 func (p *perCpuIntSeq) Add(v int) {
 	pid := GetPid()
 	p.vs[pid].v += v //should violatile:  use atomic, P's id does't mean run on the same cpu
