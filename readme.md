@@ -73,6 +73,6 @@ ok      percpu  40.046s
 -cpu 1,2,4
     Specify a list of GOMAXPROCS values for which the tests or
     benchmarks should be executed. The default is the current value of GOMAXPROCS.
-    ```
+```
    
 #### 总结下：这里的percpu并非真正的per cpu, 跟内核的percpu不一样,其实这里的percpu应该是per P, 但是这个P可能运行在任何一个cpu上，而且这个P可能交替在多个cpu上运行(虽然没有同时运行)，这就会造成数据操作的一致性问题,比如某个P对应的数据可能在多个cpu的寄存器里，即在处理P对应的数据时，可能操作的是寄存器里的数据，不是其他cpu修改后的值，按道理应该用violatile属性,但是go 没有violatile, 可以用sync/atomic 代替, 也就是为了保证数据准确性, 应该在操作P对应的数据时，应该用atomic.
