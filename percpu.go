@@ -19,7 +19,7 @@ func GetPid() int {
 }
 
 type perCpuInt struct {
-	vs []int
+	vs []int //todo: should consider cacheline, use x/sys/cpu.CacheLinePad
 }
 
 func NewIntVar() *perCpuInt {
